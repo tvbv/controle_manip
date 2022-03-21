@@ -12,7 +12,6 @@
 """
 
 import pyvisa as visa
-import time
 
 class Keith2230G():
     """
