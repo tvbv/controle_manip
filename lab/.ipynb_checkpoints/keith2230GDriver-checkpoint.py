@@ -1,31 +1,91 @@
-#================================================================================================
-# this is a library enabling remote control of a keithley 2230G with a gpib port from a pc
+"""
+================================================================================================
+# this is a library enabling remote control of a keithley 2230G with a gpib port from a pc.
 #
 # develloped @ C2N, freely inspired by https://github.com/Aaron-Mott/Keithley-2230G/blob/master/2230G.py
 #
-#Need a pyvisa backend to work
+# Need a pyvisa backend to work.
 #
-#Check that the driver for the gpib to usb cable are downloaded on your computer 
+# Please check that the drivers for the gpib to usb cable are downloaded and installed on your computer .
 #
 #================================================================================================
+"""
 
 import pyvisa as visa
 import time
 
 class Keith2230G():
+    """
+    class that manages the powersource.
+    
+    ...
+    
+    Attributes
+    ----------
+    adress : str
+        the port adress of the scope.
+        
+    ressource_manager : visa resource manager
+        the resource manager for the scope.
+        
+    inst : visa instance
+        instance of a generator.
+    
+    Methods
+    ----------
+    get_channel :
+        Queries selected channel.
+    
+    get_channel_current(channel) :
+        Queries the current reading on the specified channel.
+        
+    get_channel_voltage :
+        Queries the voltage reading on the specified channel.
+    
+    get_channel_voltage_set(channel) :
+        Queries the voltage set on the specified channel.
+    
+    get_channel_current_set(channel) :
+        Queries the current set on the specified channel.
+    
+    set_channel_current(channel, curr):
+        Set the current on the specified channel.
+    
+    set_channel_current(channel, curr) :
+        Set the current on the specified channel.
+    
+    set_channel_output(channel, state) :
+        Set the output state on the specified channel.
+    
+    reality_check :
+        Print the set and measured current and voltage of every channel.
+    
+    channel_reality_check(channel):
+        Print the set and measured current and voltage of a specified channel.
+    
+    close :
+        Close the link with the generator.
+    
+    
+    """
     
     def __init__(self, adress, backend = '@ivi', reset = 0 ,silence_initial_measurements=0):
         """
-        Initializes the instrument with instrument address, backend to use with pyvisa,reset and silencing initial measurements
+        Initializes the instrument with instrument address, backend to use with pyvisa,reset and silencing initial measurements.
+        
+        Parameters
         ----------
         inst_address : str
             The port address of the instrument.
-        backend : str
-            Backend to use for pyvisa
-        reset : bool
-            resets every parameters to default setup (see 4-11 on keithley manual) and set every channel to 0V and 0A
-        silence_initial_measurements :bool
-            to silence 
+            
+        backend : str, default = '@ivi'
+            Backend to use for pyvisa.
+            
+        reset : bool, default = 0
+            resets every parameters to default setup (see 4-11 on keithley manual) and set every channel to 0V and 0A.
+            
+        silence_initial_measurements : bool, default = 0
+            to silence initial measurements.
         """
 
         self.adress = adress
@@ -47,18 +107,29 @@ class Keith2230G():
         
     
     def get_channel(self):
-        """Queries selected channel."""
+        """
+        Queries selected channel.
+        
+        Returns
+        ----------
+        str
+        """
         channel = self.inst.query("INST?\n")
         return(channel)
     
     def get_channel_current(self, channel):
         """
         Queries the current reading on the specified channel.
+        
         Parameters
         ----------
         channel : str
             The selected channel or channels with the current readings to
-            return. can be CH1, CH2, CH3 or ALL
+            return. can be CH1, CH2, CH3 or ALL.
+        
+        Returns
+        ----------
+        float
         """
         if channel in ['CH1','CH2','CH3','ALL']:
             reading = self.inst.query(f"FETC:CURR? {channel}\n")
@@ -69,11 +140,16 @@ class Keith2230G():
     def get_channel_voltage(self, channel):
         """
         Queries the voltage reading on the specified channel.
+        
         Parameters
         ----------
         channel : str
             The selected channel or channels with the voltage readings to
             return. can be CH1, CH2, CH3 or ALL.
+            
+        Returns
+        ----------
+        float
         """
         if channel in ['CH1','CH2','CH3','ALL']:
             volt = self.inst.query(f"FETC:VOLT? {channel}\n")
@@ -84,11 +160,16 @@ class Keith2230G():
     def get_channel_current_set(self, channel):
         """
         Queries the current set on the specified channel.
+        
         Parameters
         ----------
         channel : str
             The selected channel or channels with the current set to
-            return. can be CH1, CH2, CH3 or ALL
+            return. can be CH1, CH2, CH3 or ALL.
+            
+        Returns
+        ----------
+        float
         """
         if channel in ['CH1','CH2','CH3','ALL']:
             self.inst.write(f"INST:SEL {channel}\n")
@@ -100,11 +181,16 @@ class Keith2230G():
     def get_channel_voltage_set(self, channel):
         """
         Queries the voltage set on the specified channel.
+        
         Parameters
         ----------
         channel : str
             The selected channel or channels with the voltage set to
             return. can be CH1, CH2, CH3 or ALL.
+        
+        Returns
+        ----------
+        float
         """
         if channel in ['CH1','CH2','CH3','ALL']:
             self.inst.write(f"INST:SEL {channel}\n")
@@ -115,13 +201,16 @@ class Keith2230G():
     
     def set_channel_current(self, channel, curr):
         """
-        set the current on the specified channel.
+        Set the current on the specified channel.
+        
         Parameters
         ----------
         channel : str
             The selected channel or channels with the current readings to
             return. can be CH1, CH2 or CH3.
-        curr : the current in Amps
+            
+        curr : float
+            the current in Amps.
         """
            
         if channel in ['CH1','CH2','CH3']:
@@ -132,13 +221,16 @@ class Keith2230G():
             
     def set_channel_voltage(self, channel, volt):
         """
-        set the voltage on the specified channel.
+        Sets the voltage on the specified channel.
+        
         Parameters
         ----------
         channel : str
             The selected channel or channels with the voltage level to
             set. can be CH1, CH2 or CH3.
-        voltage : the voltage in Volts
+            
+        voltage : float
+            the voltage in Volts.
         """
         if channel in ['CH1','CH2','CH3']:
             self.inst.write(f"INST:SEL {channel}\n")
@@ -151,13 +243,16 @@ class Keith2230G():
     
     def set_channel_output(self, channel, state):
         """
-        set the output state on the specified channel.
+        Sets the output state on the specified channel.
+        
         Parameters
         ----------
         channel : str
             The selected channel or channels with the voltage level to
             set. can be CH1, CH2 or CH3.
-        state : 0 for no ouptut, 1 for ouptuting
+            
+        state : bool
+            0 for no ouptut, 1 for ouptuting.
         """
         
 
@@ -172,8 +267,7 @@ class Keith2230G():
     
     def reality_check(self):
         """
-        Print the set and measured current and voltage of every channel.
-        ----------
+        Prints the set and measured current and voltage of every channel.
         """
         for i in ['CH1','CH2','CH3']:
             print("=====\n"+"Channel : "+i[2]+"; Set voltage = "+self.get_channel_voltage_set(i)+"; Set Current = "+self.get_channel_current_set(i)+"\nMeasured voltage  = "+self.get_channel_voltage(i)+"; Measured current = "+self.get_channel_current(i))
@@ -181,7 +275,9 @@ class Keith2230G():
     
     def channel_reality_check(self,channel):
         """
-        Print the set and measured current and voltage of a specified channel.
+        Prints the set and measured current and voltage of a specified channel.
+        
+        Parameters
         ----------
         channel : str
             The selected channel.
@@ -191,6 +287,9 @@ class Keith2230G():
         print("=====")
         
     def close(self):
+        """
+        Closes the link with the generator.
+        """
         self.inst.write('SYST:LOC')
         self.inst.close()
         

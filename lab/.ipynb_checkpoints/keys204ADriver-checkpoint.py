@@ -1,6 +1,14 @@
 """
-Driver for the Keysight S series 204A, developped at C2N, palaiseau.
+================================================================================================
+# this is a library enabling remote control of a  Keysight S series 204A with a rj45 port from a pc.
+#
+# develloped @ C2N, palaiseau.
+#
+# Need a pyvisa backend to work.
+#
+#================================================================================================
 """
+
 
 import sys
 import pyvisa as visa
@@ -16,39 +24,49 @@ import comtypes.gen.VisaComLib as VisaComLib
 
 class Keys204A():
     """
-    object that represents the scope
+    class that manages the scope.
     
     ...
     
     Attributes
     ----------
     adress : str
-        the port adress of the scope
+        the port adress of the scope.
+    
     ressource_manager : comtypes.POINTER(IResourceManager)
-        the ressource manager for the scope
+        the ressource manager for the scope.
+    
     inst : comtypes.POINTER(IFormattedIO488)
-        comtypes instance
+        comtypes instance.
     
     Methods
     ----------
-    do_command(command) :
-        sends a command to the scope
+    do_command(command) : 
+        sends a command to the scope.
+        
     do_query_string(query) :
-        queries the scope and return the answer as a string
+        queries the scope and return the answer as a string.
+        
     do_query_ieee_block(query) :
-        enables querying easily the scope for binary data
+        enables querying easily the scope for binary data.
+        
     do_query_number(query) :
-        queries the scope for a number
+        queries the scope for a number.
+        
     set_trigger(trigger_channel,trigger_sweep,trigger_level) :
-        set the trigger parameters
+        set the trigger parameters.
+        
     time_base(time_scale, time_ref) :
-        set the time scale on the scope display
+        set the time scale on the scope display.
+        
     set_channels(channels, displays, y_scales, offsets, probes, input_couplings) :
-        set the channels display and probes
+        set the channels display and probes.
+    
     retrieve_waveform(channel) :
-        retrieve a displayed waveform on the specified channel
+        retrieve a displayed waveform on the specified channel.
+    
     save_waveform(channel, name, path) : 
-        retieve and save a displayed waveform on the specified channel
+        retrieve and save a displayed waveform on the specified channel.
     
     
     
@@ -56,14 +74,15 @@ class Keys204A():
     
     def __init__(self, adress, backend = '@ivi'):
         """
-        Initializes the instrument with instrument address, backend to use with pyvisa
+        Initializes the instrument with instrument address, backend to use with pyvisa.
         
         Parameters
         ----------
         inst_address : str
             The port address of the instrument.
+        
         backend : str, default : '@ivi'
-            Backend to use for pyvisa
+            Backend to use for pyvisa.
         """
         
         self.adress = adress
@@ -81,24 +100,24 @@ class Keys204A():
     
     def do_command(self,command):
         """
-        enables prompting a command easily the scope
+        enables prompting a command easily the scope.
         
         Parameters
         ----------
         command : str
-            The command to send to the scope
+            The command to send to the scope.
         """
         self.inst.WriteString("%s" % command, True)
         self.__check_instrument_errors(command)
         
     def do_query_string(self,query):
         """
-        enables querying easily the scope
+        enables querying easily the scope.
         
         Parameters
         ----------
         query : str
-            The query to send to the scope
+            The query to send to the scope.
         
         Returns
         ----------
@@ -111,12 +130,12 @@ class Keys204A():
     
     def do_query_ieee_block_I2(self,query):
         """
-        enables querying easily the scope for binary data
+        enables querying easily the scope for binary data.
         
         Parameters
         ----------
         query : str
-            The query to send to the scope
+            The query to send to the scope.
         
         Returns
         ----------
@@ -130,12 +149,12 @@ class Keys204A():
     
     def do_query_number(self,query):
         """
-        enables querying easily the scope for a number
+        enables querying easily the scope for a number.
         
         Parameters
         ----------
         query : str
-            The query to send to the scope
+            The query to send to the scope.
         
         Returns
         ----------
@@ -148,12 +167,12 @@ class Keys204A():
     
     def __check_instrument_errors(self,command):
         """
-        private method, enables detection of errors
+        private method, enables detection of errors.
         
         Parameters
         ----------
         command : str
-            The command passed to the scope
+            The command passed to the scope.
         """
         while True:
             self.inst.WriteString(":SYSTem:ERRor? STRing", True)
@@ -173,18 +192,21 @@ class Keys204A():
     
     def set_trigger(self,trigger_channel = 1,trigger_sweep = None ,trigger_level = None, print_output = 0):
         """
-        set the scope's trigger mode, level and channel 
+        set the scope's trigger mode, level and channel.
         
         Parameters
         ----------
-        trigger_sweep : str
-            The type of trigger. "TRIGGERED" or "AUTO". By default no changes are applied.
-        trigger_level : float
-            the level for the trigger. By default no changes are applied.
-        trigger_channel : int
+        trigger_channel : int, default = 1
             the channel on wich the trigger is set.
-        print_output : boolean
-            wether to prit or not the new setting to verify all is good
+            
+        trigger_sweep : str, default = None
+            The type of trigger. "TRIGGERED" or "AUTO". By default no changes are applied.
+        
+        trigger_level : float, default = None
+            the level for the trigger. By default no changes are applied.
+
+        print_output : boolean, default = 0
+            wether to prit or not the new setting to verify all is good.
         """
         
         if trigger_sweep != None:
@@ -206,16 +228,18 @@ class Keys204A():
     
     def time_base(self,time_scale, time_ref,print_output = 0):
         """
-        set the scope's time base scale and offset
+        set the scope's time base scale and offset.
         
        Parameters
         ----------
         time_scale : float
             time per division in seconds. ranges from 5e-12 to 20.
+        
         time_ref : int
             percentage of the screen (starting from the left) where the time offset is put. 0 = flush left, 50 = middle , 100 = flush right.
-        print_output : boolean
-            wether to prit or not the new setting to verify all is good
+        
+        print_output : boolean, default = 0
+            wether to prit or not the new setting to verify all is good.
         """
         # Set horizontal scale and offset.
         self.do_command(":TIMebase:SCALe " + str(time_scale))
@@ -231,23 +255,28 @@ class Keys204A():
             print(" Timebase reference percent: %s" %qresult)
     
         
-    def set_channels(self, channels=[1,2,3,4], displays = [1,1,1,1], y_scales = [1,1,1,1], offsets = [0,0,0,0], probes = [None,None,None,None] , input_couplings = ["DC",'DC','DC','DC'],print_output = 0):
+    def set_channels(self, channels=[1,2,3,4], displays = [1,1,1,1], y_scales = [1,1,1,1], offsets = [0.,0.,0.,0.], probes = [None,None,None,None] , input_couplings = ['DC','DC','DC','DC'],print_output = 0):
         """
-        set the scope's time base scale and offset
+        set the scope's time base scale and offset.
         
         Parameters
         ----------
-        channels : int list
+        channels : int list, default = [1,2,3,4]
             channels to tweak. 1 to 4.
-        displays : boolean list
+        
+        displays : boolean list, default = [1,1,1,1]
             displaying state of the specified channels.
-        y_scales : int list
+        
+        y_scales : int list, default = [1,1,1,1]
             voltage per division for the specifieds channels.
-        offsets : real list
-            offset for the specified channel
-        probes : float list
-            probes ratio (X:1) for the specified channels : ranges from 1e-4 to 1e3
-        input_coupling : str list
+        
+        offsets : float list, default = [0.,0.,0.,0.]
+            offset for the specified channel.
+        
+        probes : float list, default = [None,None,None,None]
+            probes ratio (X:1) for the specified channels : ranges from 1e-4 to 1e3. If probes attached are automaticaly providing the probe data to the scope, use None.
+        
+        input_coupling : str list, default = ['DC','DC','DC','DC']
             choose from the following parameters :
                 DC = DC coupling, 1 MΩ impedance.
                 DC50 or DCFifty = DC coupling, 50Ω impedance.
@@ -257,8 +286,9 @@ class Keys204A():
             DC50, or DCFifty.
             If you have an 1153A probe attached, the valid parameters are DC, LFR1, and
             LFR2 (low-frequency reject).
-        print_output : boolean
-            wether to prit or not the new setting to verify all is good
+        
+        print_output : boolean, default = 0
+            wether to prit or not the new setting to verify all is good.
         """
         for i in range(len(channels)):
             c = channels[i]
@@ -290,12 +320,12 @@ class Keys204A():
 
     def retrieve_waveform(self,channel):
         """
-        retrieve y and x of the waveform on the specified channel (THEY MUST BE DISPLAYED)
+        retrieve y and x of the waveform on the specified channel (THEY MUST BE DISPLAYED).
         
         Parameters
         ----------
         channel : int
-            number of channel to retrieve the waveform from
+            number of channel to retrieve the waveform from.
         
         Return
         ----------
@@ -324,16 +354,18 @@ class Keys204A():
     def save_waveform(self, channel, name = 'waveform',path = ''):
         """
         retrieve y and x of the waveform on the specified channel (THEY MUST BE DISPLAYED) and store thame with the specified name within the specified folder.
-        The data is stored under numpy array format with x being data[:,0] and y being data[:,1]
+        The data is stored under numpy array format with x being data[:,0] and y being data[:,1].
         
         Parameters
         ----------
         channel : int
-            number of channel to retrieve the waveform from
-        path : str
-            path to where to store the data
-        name : str
-            name under wich data will be stored
+            number of channel to retrieve the waveform from.
+        
+        name : str, default = 'waveform'
+            name under wich data will be stored.
+            
+        path : str, default = ''
+            path to where to store the data.
         """
         
         x,y = self.retrieve_waveform(channel)
