@@ -23,6 +23,10 @@ install **numpy**,**matlplotlib** and **comtypes**
 
 Import with  `from lab import keith2230GDriver`. This driver enables the control of the keithley 2230G generator via a usb-to-gpib adapter.
 
+I used the keithley KL 488 adaptator. One can find the drivers i used here : https://github.com/tvbv/controle_manip/blob/main/KI-488_v5.0.0_KI-488-5.0.0.zip.
+
+One can find the keithley generator's doc regarding remote control here: https://download.tek.com/manual/2230G-900-01A_Jun_2018_User.pdf
+
 ## **keys204ADriver**
 
 Import with  `from lab import keys204ADriver `. This driver enables the control of the keysight 204A scope via a RJ45 cable.
