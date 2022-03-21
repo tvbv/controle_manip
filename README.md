@@ -27,5 +27,7 @@ Import with  `from lab import keith2230GDriver`. This driver enables the control
 
 Import with  `from lab import keys204ADriver `. This driver enables the control of the keysight 204A scope via a RJ45 cable.
 
+One can find the keysight scope's doc regarding remote control here: https://keysight-docs.s3-us-west-2.amazonaws.com/keysight-pdfs/DSOV084A/Programmer_s+Guide+for+Infiniium+Oscilloscop.pdf
+
 
 
