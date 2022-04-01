@@ -4,7 +4,7 @@
 #
 # develloped @ C2N, freely inspired by https://github.com/Aaron-Mott/Keithley-2230G/blob/master/2230G.py
 #
-# Need a pyvisa backend to work.
+# Needs a pyvisa backend to work.
 #
 # Please check that the drivers for the gpib to usb cable are downloaded and installed on your computer .
 #
