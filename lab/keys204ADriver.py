@@ -189,6 +189,7 @@ class Keys204A():
                 print("ERROR: :SYSTem:ERRor? STRing returned nothing, command: '%s'"% command)
                 print("Exited because of error.")
                 sys.exit(1)
+        
     
     def set_trigger(self,trigger_channel = 1,trigger_sweep = None ,trigger_level = None, print_output = 0):
         """
@@ -292,7 +293,6 @@ class Keys204A():
         """
         for i in range(len(channels)):
             c = channels[i]
-            print(i)
             if probes[i] != None : 
                 self.do_command(":CHANnel"+ str(c)+":PROBe "+str(probes[i]))
             if displays[i] != None :
@@ -318,7 +318,7 @@ class Keys204A():
                 qresult = self.do_query_string(":CHANnel"+str(c)+":INPut?")
                 print("load imp channel" +str(c)+" : %s" %qresult)
 
-    def retrieve_waveform(self,channel):
+    def retrieve_waveform(self,channel,nb_points):
         """
         retrieve y and x of the waveform on the specified channel (THEY MUST BE DISPLAYED).
         
@@ -326,14 +326,14 @@ class Keys204A():
         ----------
         channel : int
             number of channel to retrieve the waveform from.
-        
+        nb_points : int
+            number of data points to be acquired.
         Return
         ----------
         x, y : numpy arrays
         """
-        
-        self.do_command(":DIGitize")
-        
+        self.do_command(":ACQuire:POINts "+str(nb_points))
+        self.do_command(":RUN")
         self.do_command(":WAVeform:SOURce channel"+str(channel))
         self.do_command(":WAVeform:FORMat word")
         self.do_command(":SYSTem:HEADer OFF")
@@ -343,15 +343,16 @@ class Keys204A():
         y_origin = self.do_query_number(":WAVeform:YORigin?")
         x_increment = self.do_query_number(":WAVeform:XINCrement?")
         x_origin = self.do_query_number(":WAVeform:XORigin?")
-
         waveform_raw = self.do_query_ieee_block_I2(":WAVeform:DATA?")
+
         self.do_command(":RUN")
+
         y_waveform = y_increment*np.array(waveform_raw) +y_origin
         x_waveform = x_increment*np.array(range(int(number_of_points)))+x_origin
         
         return x_waveform, y_waveform
     
-    def save_waveform(self, channel, name = 'waveform',path = ''):
+    def save_waveform(self, channel,nb_points, name = 'waveform',path = ''):
         """
         retrieve y and x of the waveform on the specified channel (THEY MUST BE DISPLAYED) and store thame with the specified name within the specified folder.
         The data is stored under numpy array format with x being data[:,0] and y being data[:,1].
@@ -361,6 +362,9 @@ class Keys204A():
         channel : int
             number of channel to retrieve the waveform from.
         
+        nb_points : int
+            number of data point to be acquired.
+        
         name : str, default = 'waveform'
             name under wich data will be stored.
             
@@ -368,6 +372,6 @@ class Keys204A():
             path to where to store the data.
         """
         
-        x,y = self.retrieve_waveform(channel)
+        x,y = self.retrieve_waveform(channel,nb_points)
         data_to_store = np.stack((x,y), axis=1)
         np.save(path + name+'.npy',data_to_store)
