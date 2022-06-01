@@ -17,7 +17,7 @@ To use, put the lab folder in the folder where your python code/jupyter notebook
 Install **pyvisa** library at https://anaconda.org/conda-forge/pyvisa or with the installer of your choice. 
 _please note that you'll need to install a VISA backend, more information here:https://pyvisa.readthedocs.io/en/latest/introduction/configuring.html_.
 
-Install **numpy**,**matlplotlib** and **comtypes** with pip or conda 
+Install **numpy**, **matlplotlib** and **comtypes** with pip or conda 
 
 ## **keith2230GDriver**
 
