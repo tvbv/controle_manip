@@ -375,3 +375,18 @@ class Keys204A():
         x,y = self.retrieve_waveform(channel,nb_points)
         data_to_store = np.stack((x,y), axis=1)
         np.save(path + name+'.npy',data_to_store)
+         
+#   def template(self, parameters):
+#        """
+#        Quick description of the function's behavior.
+#        
+#        Parameters
+#        ----------
+#        parameter 1 : type
+#            What is this parameter.
+#           
+#        Returns
+#        ----------
+#        what is returned and its type.
+#        """
+#       pass
