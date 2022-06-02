@@ -291,4 +291,20 @@ class Keith2230G():
         """
         self.inst.write('SYST:LOC')
         self.inst.close()
+    
+#   def template(self, parameters):
+#        """
+#        Quick description of the function's behavior.
+#        
+#        Parameters
+#        ----------
+#        parameter 1 : type
+#            What is this parameter.
+#           
+#        Returns
+#        ----------
+#        what is returned and its type.
+#        """
+#       pass
+
         
