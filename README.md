@@ -1,6 +1,6 @@
 # **lab library for lab appliances control**
 
-To use, put the lab folder in the folder where your python code/jupyter notebook lies and use  `import lab ` as you would for a classic python package. please follow the following instructions to have a working library.
+To use, put the lab folder in the folder where your python code/jupyter notebook lies, or run in a python virtual env: `pip install https://github.com/tvbv/controle_manip/archive/refs/heads/pip-ready.zip`, it will download all the required dependencies (beware, the installed dependencies might not be compatible with the driver as their latest version will be downloaded. Please refer to the following section if you encounter issues.).  Then use  `import lab ` as you would for a classic python package.
 
 **Library needed and versions used for the dev:**
 
@@ -14,10 +14,10 @@ To use, put the lab folder in the folder where your python code/jupyter notebook
 
 ## **How to install the needed library**
 
-Install **pyvisa** library at https://anaconda.org/conda-forge/pyvisa or with the installer of your choice. 
+Install `pyvisa` library at https://anaconda.org/conda-forge/pyvisa or with the installer of your choice. 
 _please note that you'll need to install a VISA backend, more information here:https://pyvisa.readthedocs.io/en/latest/introduction/configuring.html_.
 
-Install **numpy**, **matlplotlib** and **comtypes** with pip or conda 
+Install `matlplotlib` with pip or conda if needed. 
 
 ## **keith2230GDriver**
 
