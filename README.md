@@ -14,10 +14,12 @@ To use, put the lab folder in the folder where your python code/jupyter notebook
 
 ## **How to install the needed library**
 
-Install **pyvisa** library at https://anaconda.org/conda-forge/pyvisa or with the installer of your choice. 
+Install `pyvisa` library at https://anaconda.org/conda-forge/pyvisa or with the installer of your choice. 
 _please note that you'll need to install a VISA backend, more information here:https://pyvisa.readthedocs.io/en/latest/introduction/configuring.html_.
 
-Install **numpy**, **matlplotlib** and **comtypes** with pip or conda 
+Run in a python virtual env: `pip install https://github.com/tvbv/controle_manip/archive/refs/heads/pip-ready.zip`, it will download all the required dependencies. 
+
+Install `matlplotlib` with pip or conda if needed. 
 
 ## **keith2230GDriver**
 
